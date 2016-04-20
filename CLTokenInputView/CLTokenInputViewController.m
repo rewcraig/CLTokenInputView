@@ -58,6 +58,8 @@
     self.secondTokenInputView.drawBottomBorder = YES;
     self.secondTokenInputView.delegate = self;
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    
+    self.textView.delegate = self;
 }
 
 - (void)didReceiveMemoryWarning
@@ -128,6 +130,7 @@
     [self.view removeConstraint:self.tableViewTopLayoutConstraint];
     self.tableViewTopLayoutConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0];
     [self.view addConstraint:self.tableViewTopLayoutConstraint];
+    view.collapsed = NO;
     [self.view layoutIfNeeded];
 }
 
@@ -169,6 +172,13 @@
     }
 }
 
+#pragma mark - UITextViewDelegate
+
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    self.tokenInputView.collapsed = YES;
+    self.secondTokenInputView.collapsed = YES;
+    [self.view layoutIfNeeded];
+}
 
 #pragma mark - Demo Button Actions
 

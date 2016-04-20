@@ -101,6 +101,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonatomic) CGFloat textFieldDisplayOffset;
 @property (readonly, nonatomic, nullable) NSString *text;
 
+@property (assign, nonatomic) BOOL collapsed;
+
 - (void)addToken:(CLToken *)token;
 - (void)removeToken:(CLToken *)token;
 - (nullable CLToken *)tokenizeTextfieldText;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CLTokenInputViewController">
@@ -9,6 +9,7 @@
                 <outlet property="secondTokenInputView" destination="yVy-7A-UfW" id="2iG-Rx-Cs5"/>
                 <outlet property="tableView" destination="ngG-oE-HZd" id="rqO-aj-eUD"/>
                 <outlet property="tableViewTopLayoutConstraint" destination="1kw-0b-caj" id="xpm-9U-9B2"/>
+                <outlet property="textView" destination="Zki-hx-bld" id="gFe-Il-zas"/>
                 <outlet property="tokenInputTopSpace" destination="qyJ-Ha-dKK" id="XgZ-DT-9mT"/>
                 <outlet property="tokenInputView" destination="FM2-Aw-6xi" id="1Up-Uk-d1l"/>
                 <outlet property="view" destination="1" id="3"/>
@@ -39,6 +40,13 @@
                         <outlet property="delegate" destination="-1" id="bfo-i5-VlP"/>
                     </connections>
                 </view>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Zki-hx-bld">
+                    <rect key="frame" x="0.0" y="152" width="320" height="328"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                </textView>
                 <tableView hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="ngG-oE-HZd">
                     <rect key="frame" x="0.0" y="108" width="320" height="372"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -54,9 +62,13 @@
                 <constraint firstItem="ngG-oE-HZd" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="4ZF-JA-u03"/>
                 <constraint firstItem="yVy-7A-UfW" firstAttribute="top" secondItem="FM2-Aw-6xi" secondAttribute="bottom" id="5O7-CG-sSD"/>
                 <constraint firstAttribute="bottom" secondItem="ngG-oE-HZd" secondAttribute="bottom" id="Ixl-wG-sGd"/>
+                <constraint firstItem="Zki-hx-bld" firstAttribute="top" secondItem="yVy-7A-UfW" secondAttribute="bottom" id="P9c-Pp-eED"/>
                 <constraint firstItem="FM2-Aw-6xi" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="RdN-nO-zz0"/>
                 <constraint firstItem="FM2-Aw-6xi" firstAttribute="leading" secondItem="yVy-7A-UfW" secondAttribute="leading" id="eNT-zt-00a"/>
                 <constraint firstAttribute="trailing" secondItem="ngG-oE-HZd" secondAttribute="trailing" id="hBS-gg-k3X"/>
+                <constraint firstAttribute="trailing" secondItem="Zki-hx-bld" secondAttribute="trailing" id="kRG-BJ-80H"/>
+                <constraint firstItem="Zki-hx-bld" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="m7S-tM-KO0"/>
+                <constraint firstAttribute="bottom" secondItem="Zki-hx-bld" secondAttribute="bottom" id="p0C-Hu-YT3"/>
                 <constraint firstItem="FM2-Aw-6xi" firstAttribute="top" secondItem="1" secondAttribute="top" constant="64" id="qyJ-Ha-dKK"/>
                 <constraint firstAttribute="trailing" secondItem="FM2-Aw-6xi" secondAttribute="trailing" id="ukx-9y-gJx"/>
                 <constraint firstItem="FM2-Aw-6xi" firstAttribute="trailing" secondItem="yVy-7A-UfW" secondAttribute="trailing" id="vhK-dW-Sw9"/>
@@ -65,9 +77,4 @@
             <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
         </view>
     </objects>
-    <simulatedMetricsContainer key="defaultSimulatedMetrics">
-        <simulatedStatusBarMetrics key="statusBar"/>
-        <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4"/>
-    </simulatedMetricsContainer>
 </document>

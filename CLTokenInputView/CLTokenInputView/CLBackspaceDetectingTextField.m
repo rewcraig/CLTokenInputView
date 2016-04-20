@@ -59,4 +59,11 @@
     [super setDelegate:delegate];
 }
 
+- (void)setHidden:(BOOL)hidden {
+    if (hidden) {
+        [self resignFirstResponder];
+    }
+    [super setHidden:hidden];
+}
+
 @end
