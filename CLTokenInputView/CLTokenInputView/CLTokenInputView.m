@@ -435,6 +435,16 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     self.textField.keyboardAppearance = _keyboardAppearance;
 }
 
+- (void)setFont:(UIFont *)font {
+    _font = font;
+    self.textField.font = font;
+    self.summaryView.font = font;
+    for (CLTokenView *tokenView in self.tokenViews) {
+        tokenView.font = font;
+    }
+    [self repositionViews];
+}
+
 
 #pragma mark - Measurements (text field offset, etc.)
 
