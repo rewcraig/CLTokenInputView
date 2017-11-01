@@ -437,12 +437,14 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 - (void)setFont:(UIFont *)font {
     _font = font;
-    self.textField.font = font;
-    self.summaryView.font = font;
-    for (CLTokenView *tokenView in self.tokenViews) {
-        tokenView.font = font;
+    _textField.font = _font;
+    _fieldLabel.font = _font;
+    _summaryView.font = _font;
+    [_fieldLabel sizeToFit];
+    for (CLTokenView *view in _tokenViews) {
+        view.font = _font;
     }
-    [self repositionViews];
+    [self setNeedsLayout];
 }
 
 

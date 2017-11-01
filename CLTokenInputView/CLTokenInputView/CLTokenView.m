@@ -107,10 +107,11 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
 }
 
 - (void)setFont:(UIFont *)font {
-    self.label.font = font;
-    self.selectedLabel.font = font;
-    self.frame = CGRectMake(0,0, self.intrinsicContentSize.width, self.intrinsicContentSize.height);
-    [self updateLabelAttributedText];
+    _font = font;
+    _label.font = _font;
+    _selectedLabel.font = _font;
+    [self setNeedsLayout];
+    [self invalidateIntrinsicContentSize];
 }
 
 #pragma mark - Hide Unselected Comma

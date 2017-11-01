@@ -27,11 +27,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic, nullable) NSObject <CLTokenViewDelegate> *delegate;
 @property (assign, nonatomic) BOOL selected;
 @property (assign, nonatomic) BOOL hideUnselectedComma;
+@property (nonatomic, strong) UIFont *font;
 
 - (id)initWithToken:(CLToken *)token font:(nullable UIFont *)font;
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated;
-- (void)setFont:(nullable UIFont *)font;
 
 // For iOS 6 compatibility, provide the setter tintColor
 - (void)setTintColor:(nullable UIColor *)tintColor;

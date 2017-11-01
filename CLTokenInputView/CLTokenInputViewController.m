@@ -31,7 +31,8 @@
                        @"Cluster Labs, Inc.",
                        @"Pat Fives",
                        @"Rizwan Sattar",
-                       @"Taylor Hughes"];
+                       @"Taylor Hughes",
+                       @"alkdsfkljasdfkjadsjflkajsdlfkjalsdfjlksdflasdlfkjasldfklsdjflsjdfkljadsfsadf"];
         self.filteredNames = nil;
         self.selectedNames = [NSMutableArray arrayWithCapacity:self.names.count];
 

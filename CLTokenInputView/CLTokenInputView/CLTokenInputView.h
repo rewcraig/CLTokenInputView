@@ -80,6 +80,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (copy, nonatomic, nullable) IBInspectable NSString *fieldName;
 /** Color of optional */
 @property (strong, nonatomic, nullable) IBInspectable UIColor *fieldColor;
+@property (strong, nonatomic, nullable) IBInspectable UIColor *textColor;
 @property (copy, nonatomic, nullable) IBInspectable NSString *placeholderText;
 @property (strong, nonatomic, nullable) IBInspectable UIFont *font;
 
