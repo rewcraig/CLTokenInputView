@@ -78,6 +78,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     self.summaryView.delegate = self;
     self.summaryView.tintColor = self.tintColor;
     self.summaryView.font = self.textField.font;
+    self.clipsToBounds = YES;
 
     [self repositionViews];
 }
@@ -153,7 +154,9 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     for (CLTokenView *tokenView in self.tokenViews) {
         tokenView.hidden = hidden;
     }
-    self.textField.hidden = hidden;
+    if (self.tokenViews.count > 0) {
+        self.textField.hidden = hidden;
+    }
 }
 
 - (void)removeToken:(CLToken *)token
@@ -323,6 +326,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
         self.summaryView.hidden = NO;
         [self.summaryView setTokens:self.tokens];
         [self setTokenViewsHidden:YES];
+        self.textField.text = nil;
     } else {
         self.summaryView.hidden = YES;
         [self setTokenViewsHidden:NO];
