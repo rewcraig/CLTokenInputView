@@ -36,6 +36,10 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 @property (assign, nonatomic) CGFloat additionalTextFieldYOffset;
 
 @property (strong, nonatomic) CLTokenSummaryView *summaryView;
+@property (strong, nonatomic) UILabel *moreSummaryLabel;
+
+//@property (strong, nonatomic) UITapGestureRecognizer *tapRecognizer;
+//@property (strong, nonatomic) UIView *summaryTapView;
 
 @end
 
@@ -80,6 +84,10 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     self.summaryView.font = self.textField.font;
     self.clipsToBounds = YES;
 
+    self.moreSummaryLabel = [UILabel new];
+    [self addSubview:self.moreSummaryLabel];
+    self.moreSummaryLabel.textColor = self.tintColor;
+    self.moreSummaryLabel.font = self.textField.font;
     [self repositionViews];
 }
 
@@ -252,30 +260,116 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
         firstLineRightBoundary = CGRectGetMinX(accessoryRect) - HSPACE;
     }
 
-    self.summaryView.frame = CGRectMake(curX, curY, firstLineRightBoundary-curX, STANDARD_ROW_HEIGHT);
-    if (!self.collapsed) {
+    //self.summaryView.frame = CGRectMake(curX, curY, firstLineRightBoundary-curX, STANDARD_ROW_HEIGHT);
+    //self.summaryView.tokens = self.tokens;
+    CGSize moreLabelSize = CGSizeZero;
+    if (self.collapsed) {
+        CGSize fittingSize = CGSizeMake(firstLineRightBoundary, STANDARD_ROW_HEIGHT);
+        
+        NSInteger moreTokens = self.tokens.count - 1;
+        if (moreTokens > 0) {
+            // estimate how big the 'more' label will be based on the max number it could be
+            self.moreSummaryLabel.text = [NSString stringWithFormat:@" & %ld more", (long)moreTokens];
+            moreLabelSize = [self.moreSummaryLabel sizeThatFits:fittingSize];
+        }
+        firstLineRightBoundary -= moreLabelSize.height;
+    }
+    //if (!self.collapsed) {
         // Position token views
+    NSInteger numDisplayedTokens = 0;
         CGRect tokenRect = CGRectNull;
         for (UIView *tokenView in self.tokenViews) {
             tokenRect = tokenView.frame;
 
             CGFloat tokenBoundary = isOnFirstLine ? firstLineRightBoundary : rightBoundary;
             if (curX + CGRectGetWidth(tokenRect) > tokenBoundary) {
+                if (!self.collapsed) {
+                    curX = PADDING_LEFT;
+                    curY += STANDARD_ROW_HEIGHT+VSPACE;
+                    totalHeight += STANDARD_ROW_HEIGHT;
+                }
                 // Need a new line
-                curX = PADDING_LEFT;
-                curY += STANDARD_ROW_HEIGHT+VSPACE;
-                totalHeight += STANDARD_ROW_HEIGHT;
                 isOnFirstLine = NO;
             }
-
-            tokenRect.origin.x = curX;
-            // Center our tokenView vertially within STANDARD_ROW_HEIGHT
-            tokenRect.origin.y = curY + ((STANDARD_ROW_HEIGHT-CGRectGetHeight(tokenRect))/2.0);
-            tokenView.frame = tokenRect;
-
-            curX = CGRectGetMaxX(tokenRect) + HSPACE;
+            if (self.collapsed && !isOnFirstLine) {
+                tokenView.hidden = YES;
+                
+            } else {
+                numDisplayedTokens++;
+                tokenView.hidden = NO;
+                tokenRect.origin.x = curX;
+                // Center our tokenView vertially within STANDARD_ROW_HEIGHT
+                tokenRect.origin.y = curY + ((STANDARD_ROW_HEIGHT-CGRectGetHeight(tokenRect))/2.0);
+                tokenView.frame = tokenRect;
+                
+                curX = CGRectGetMaxX(tokenRect) + HSPACE;
+            }
         }
+    
+    if (numDisplayedTokens < self.tokens.count) {
+        // update the more label with the actual number of 'more' tokens
+        self.moreSummaryLabel.text = [NSString stringWithFormat:@" & %ld more", (long)(self.tokens.count - numDisplayedTokens)];
+        self.moreSummaryLabel.frame = CGRectMake(curX + HSPACE, PADDING_TOP, moreLabelSize.width, STANDARD_ROW_HEIGHT);
+        self.moreSummaryLabel.hidden = NO;
+        curX = CGRectGetMaxX(self.moreSummaryLabel.frame) + HSPACE;
+    } else {
+        self.moreSummaryLabel.hidden = YES;
     }
+   // }
+//    else {
+//        CGSize fittingSize = CGSizeMake(self.frame.size.width-(PADDING_LEFT+PADDING_RIGHT), self.frame.size.height-(PADDING_TOP+PADDING_BOTTOM));
+//
+//        UITextField *moreSummaryLabel = [UITextField new];
+//        NSInteger moreTokens = self.tokens.count - 1;
+//        CGSize moreLabelSize = CGSizeZero;
+//        if (moreTokens > 0) {
+//            // estimate how big the 'more' label will be based on the max number it could be
+//            moreSummaryLabel.text = [NSString stringWithFormat:@" & %ld more", (long)moreTokens];
+//            moreLabelSize = [moreSummaryLabel sizeThatFits:fittingSize];
+//        }
+//
+//        // figure out how many tokens can fit
+//        CGFloat tokenFittingWidth = fittingSize.width - moreLabelSize.width;
+//        NSString *testTokenString = @"";
+//        NSString *finalTokenString = nil;
+//        CGFloat actualTokenLabelWidth = tokenFittingWidth;
+//        NSInteger numDisplayedTokens = 0;
+//        CGFloat totalWidth = 0;
+//        for (NSObject *token in self.tokens) {
+//            if ([token isKindOfClass:[CLToken class]]) {
+//                CLToken *clToken = (CLToken*)token;
+//                NSString *displayText = clToken.displayText;
+//                if (numDisplayedTokens > 0) {
+//                    // prepend a spacer between tokens if not the first
+//                    displayText = [@", " stringByAppendingString:displayText];
+//                }
+//                testTokenString = [testTokenString stringByAppendingString:displayText];
+//                CGRect r = [displayText boundingRectWithSize:CGSizeMake(tokenFittingWidth, fittingSize.height)
+//                                                     options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine
+//                                                  attributes:@{NSFontAttributeName:self.font}
+//                                                     context:nil];
+//                if (numDisplayedTokens == 0 || totalWidth + r.size.width <= tokenFittingWidth) {
+//                    finalTokenString = [testTokenString copy];
+//                    totalWidth += r.size.width;
+//                    numDisplayedTokens++;
+//                }
+//                actualTokenLabelWidth = totalWidth;
+//            }
+//        }
+//        if (finalTokenString) {
+//            self.tokensSummaryLabel.hidden = NO;
+//            self.tokensSummaryLabel.text = [finalTokenString copy];
+//            self.tokensSummaryLabel.frame = CGRectMake(PADDING_X,PADDING_Y, actualTokenLabelWidth, fittingSize.height);
+//        }
+//        if (numDisplayedTokens < tokens.count) {
+//            // update the more label with the actual number of 'more' tokens
+//            self.moreSummaryLabel.text = [NSString stringWithFormat:@" & %ld more", (long)(tokens.count - numDisplayedTokens)];
+//            self.moreSummaryLabel.frame = CGRectMake(self.tokensSummaryLabel.frame.origin.x + self.tokensSummaryLabel.frame.size.width, PADDING_Y, moreLabelSize.width, fittingSize.height);
+//            self.moreSummaryLabel.hidden = NO;
+//        } else {
+//            self.moreSummaryLabel.hidden = YES;
+//        }
+//    }
     // Always indent textfield by a little bit
     curX += TEXT_FIELD_HSPACE;
     CGFloat textBoundary = isOnFirstLine ? firstLineRightBoundary : rightBoundary;
@@ -286,9 +380,11 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
         // isOnFirstLine will be useful, and this calculation is important.
         // So leaving it set here, and marking the warning to ignore it
 #pragma unused(isOnFirstLine)
-        curX = PADDING_LEFT + TEXT_FIELD_HSPACE;
-        curY += STANDARD_ROW_HEIGHT+VSPACE;
-        totalHeight += STANDARD_ROW_HEIGHT;
+        if (!self.collapsed) {
+            curX = PADDING_LEFT + TEXT_FIELD_HSPACE;
+            curY += STANDARD_ROW_HEIGHT+VSPACE;
+            totalHeight += STANDARD_ROW_HEIGHT;
+        }
         // Adjust the width
         availableWidthForTextField = rightBoundary - curX;
     }
@@ -322,15 +418,15 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 }
 
 - (void)setCollapsed:(BOOL)collapsed {
-    if (collapsed) {
-        self.summaryView.hidden = NO;
-        [self.summaryView setTokens:self.tokens];
-        [self setTokenViewsHidden:YES];
-        self.textField.text = nil;
-    } else {
-        self.summaryView.hidden = YES;
-        [self setTokenViewsHidden:NO];
-    }
+//    if (collapsed) {
+//        self.summaryView.hidden = NO;
+//        [self.summaryView setTokens:self.tokens];
+//        [self setTokenViewsHidden:YES];
+//        self.textField.text = nil;
+//    } else {
+//        self.summaryView.hidden = YES;
+//        [self setTokenViewsHidden:NO];
+//    }
     _collapsed = collapsed;
     [self repositionViews];
 }
@@ -444,6 +540,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     _textField.font = _font;
     _fieldLabel.font = _font;
     _summaryView.font = _font;
+    _moreSummaryLabel.font = _font;
     [_fieldLabel sizeToFit];
     for (CLTokenView *view in _tokenViews) {
         view.font = _font;
