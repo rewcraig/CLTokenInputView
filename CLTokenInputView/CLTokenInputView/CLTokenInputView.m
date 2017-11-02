@@ -39,7 +39,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 @property (strong, nonatomic) UILabel *moreSummaryLabel;
 
 //@property (strong, nonatomic) UITapGestureRecognizer *tapRecognizer;
-//@property (strong, nonatomic) UIView *summaryTapView;
+@property (strong, nonatomic) UIControl *summaryControl;
 
 @end
 
@@ -88,6 +88,14 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     [self addSubview:self.moreSummaryLabel];
     self.moreSummaryLabel.textColor = self.tintColor;
     self.moreSummaryLabel.font = self.textField.font;
+    
+    self.summaryControl = [UIControl new];
+    [self.summaryControl addTarget:self
+                            action:@selector(onSummaryConrolTapped:)
+                  forControlEvents:UIControlEventTouchUpInside];
+    self.summaryControl.backgroundColor = [UIColor clearColor];
+    self.summaryControl.enabled = NO;
+    [self addSubview:self.summaryControl];
     [self repositionViews];
 }
 
@@ -249,7 +257,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
         curX = CGRectGetMaxX(fieldLabelRect) + FIELD_MARGIN_X;
     }
-
+    
     // Position accessory view (if set)
     if (self.accessoryView) {
         CGRect accessoryRect = self.accessoryView.frame;
@@ -259,6 +267,9 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
         firstLineRightBoundary = CGRectGetMinX(accessoryRect) - HSPACE;
     }
+
+    CGRect summaryControlRect = CGRectMake(curX, PADDING_TOP, firstLineRightBoundary, STANDARD_ROW_HEIGHT);
+    self.summaryControl.frame = summaryControlRect;
 
     //self.summaryView.frame = CGRectMake(curX, curY, firstLineRightBoundary-curX, STANDARD_ROW_HEIGHT);
     //self.summaryView.tokens = self.tokens;
@@ -427,6 +438,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 //        self.summaryView.hidden = YES;
 //        [self setTokenViewsHidden:NO];
 //    }
+    _summaryControl.enabled = collapsed;
     _collapsed = collapsed;
     [self repositionViews];
 }
@@ -711,6 +723,12 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     [self repositionViews];
 }
 
+- (void)onSummaryConrolTapped:(id)sender {
+    if (self.collapsed) {
+        self.collapsed = NO;
+        [self beginEditing];
+    }
+}
 
 #pragma mark - Drawing
 
