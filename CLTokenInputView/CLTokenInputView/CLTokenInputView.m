@@ -10,7 +10,6 @@
 
 #import "CLBackspaceDetectingTextField.h"
 #import "CLTokenView.h"
-#import "CLTokenSummaryView.h"
 
 static CGFloat const HSPACE = 0.0;
 static CGFloat const TEXT_FIELD_HSPACE = 4.0; // Note: Same as CLTokenView.PADDING_X
@@ -24,7 +23,7 @@ static CGFloat const STANDARD_ROW_HEIGHT = 25.0;
 
 static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_X
 
-@interface CLTokenInputView () <CLBackspaceDetectingTextFieldDelegate, CLTokenViewDelegate, CLTokenSummaryViewDelegate>
+@interface CLTokenInputView () <CLBackspaceDetectingTextFieldDelegate, CLTokenViewDelegate>
 
 @property (strong, nonatomic) CL_GENERIC_MUTABLE_ARRAY(CLToken *) *tokens;
 @property (strong, nonatomic) CL_GENERIC_MUTABLE_ARRAY(CLTokenView *) *tokenViews;
@@ -35,10 +34,8 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 @property (assign, nonatomic) CGFloat intrinsicContentHeight;
 @property (assign, nonatomic) CGFloat additionalTextFieldYOffset;
 
-@property (strong, nonatomic) CLTokenSummaryView *summaryView;
 @property (strong, nonatomic) UILabel *moreSummaryLabel;
 
-//@property (strong, nonatomic) UITapGestureRecognizer *tapRecognizer;
 @property (strong, nonatomic) UIControl *summaryControl;
 
 @end
@@ -75,13 +72,6 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
     self.intrinsicContentHeight = STANDARD_ROW_HEIGHT;
 
-    self.summaryView = [CLTokenSummaryView new];
-    [self addSubview:self.summaryView];
-    self.summaryView.backgroundColor = [UIColor clearColor];
-    self.summaryView.hidden = YES;
-    self.summaryView.delegate = self;
-    self.summaryView.tintColor = self.tintColor;
-    self.summaryView.font = self.textField.font;
     self.clipsToBounds = YES;
 
     self.moreSummaryLabel = [UILabel new];
@@ -131,7 +121,6 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     for (UIView *tokenView in self.tokenViews) {
         tokenView.tintColor = self.tintColor;
     }
-    self.summaryView.tintColor = self.tintColor;
 }
 
 
@@ -163,16 +152,6 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
     [self updatePlaceholderTextVisibility];
     [self repositionViews];
-}
-
-- (void)setTokenViewsHidden:(BOOL)hidden
-{
-    for (CLTokenView *tokenView in self.tokenViews) {
-        tokenView.hidden = hidden;
-    }
-    if (self.tokenViews.count > 0) {
-        self.textField.hidden = hidden;
-    }
 }
 
 - (void)removeToken:(CLToken *)token
@@ -429,15 +408,6 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 }
 
 - (void)setCollapsed:(BOOL)collapsed {
-//    if (collapsed) {
-//        self.summaryView.hidden = NO;
-//        [self.summaryView setTokens:self.tokens];
-//        [self setTokenViewsHidden:YES];
-//        self.textField.text = nil;
-//    } else {
-//        self.summaryView.hidden = YES;
-//        [self setTokenViewsHidden:NO];
-//    }
     _summaryControl.enabled = collapsed;
     _collapsed = collapsed;
     [self repositionViews];
@@ -551,7 +521,6 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     _font = font;
     _textField.font = _font;
     _fieldLabel.font = _font;
-    _summaryView.font = _font;
     _moreSummaryLabel.font = _font;
     [_fieldLabel sizeToFit];
     for (CLTokenView *view in _tokenViews) {
